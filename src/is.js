@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import equal from 'fast-deep-equal';
 import { isValueObject } from './predicates/isValueObject';
 
 /**
@@ -81,9 +82,13 @@ export function is(valueA, valueB) {
       return false;
     }
   }
-  return !!(
-    isValueObject(valueA) &&
-    isValueObject(valueB) &&
-    valueA.equals(valueB)
-  );
+
+  const aIsValueObject = isValueObject(valueA);
+  const bIsValueObject = isValueObject(valueB);
+  if (aIsValueObject !== bIsValueObject) {
+    return false;
+  } else if (aIsValueObject && bIsValueObject) {
+    return valueA.equals(valueB);
+  }
+  return equal(valueA, valueB);
 }
