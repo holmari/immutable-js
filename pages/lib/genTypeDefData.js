@@ -279,10 +279,6 @@ function DocVisitor(source) {
         return {
           k: TypeKind.Any,
         };
-      case ts.SyntaxKind.UnknownKeyword:
-        return {
-          k: TypeKind.Unknown,
-        };
       case ts.SyntaxKind.ThisType:
         return {
           k: TypeKind.This,
