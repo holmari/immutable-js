@@ -125,5 +125,7 @@
     "sequence",
     "iteration"
   ],
-  "dependencies": {}
+  "dependencies": {
+    "fast-deep-equal": "^3.1.1"
+  }
 }

@@ -54,11 +54,11 @@ describe('Equality', () => {
 
     const array = [1, 2, 3];
     expectIs(array, array);
-    expectIsNot(array, [1, 2, 3]);
+    expectIs(array, [1, 2, 3]);
 
     const object = { key: 'value' };
     expectIs(object, object);
-    expectIsNot(object, { key: 'value' });
+    expectIs(object, { key: 'value' });
   });
 
   it('dereferences things', () => {
