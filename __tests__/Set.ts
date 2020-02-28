@@ -241,6 +241,29 @@ describe('Set', () => {
     expect(is(s1, v1)).toBe(false);
   });
 
+  it('works if trying to insert a large number of vanilla JS objects', () => {
+    const makeVanillaJsObject = optionalProps => ({
+      ...optionalProps,
+      field: 'value',
+      otherField: 'otherValue',
+    });
+
+    const uniqueObjCount = 100;
+    const objects = [];
+    for (let i = 0; i < 10000; ++i) {
+      // add a hundred unique objects to exceed the minimum size
+      objects.push(
+        makeVanillaJsObject(i < uniqueObjCount ? { index: i } : undefined)
+      );
+    }
+
+    const s1 = Set(objects);
+    expect(s1.size).toBe(uniqueObjCount + 1);
+
+    const s2 = Set(objects);
+    expect(s1).toEqual(s2);
+  });
+
   it('can use union in a withMutation', () => {
     const js = Set()
       .withMutations(set => {

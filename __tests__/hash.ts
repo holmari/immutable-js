@@ -29,11 +29,11 @@ describe('hash', () => {
     expect(hash(123.4567)).toBe(887769707);
   });
 
-  it('generates different hashes for different objects', () => {
+  it('generates identical hashes for equal objects', () => {
     const objA = {};
     const objB = {};
     expect(hash(objA)).toBe(hash(objA));
-    expect(hash(objA)).not.toBe(hash(objB));
+    expect(hash(objA)).toBe(hash(objB));
   });
 
   it('generates different hashes for different functions', () => {

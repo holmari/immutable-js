@@ -839,6 +839,32 @@ function hashString(string) {
   return smi(hashed);
 }
 
+function deepHashJSArray(arr) {
+  var h = 1;
+  for (var i = 0; i < arr.length; ++i) {
+    h *= 31;
+    h ^= hash(arr[i]);
+  }
+  return h;
+}
+
+function getDeepHashJSObj(obj) {
+  var h = 1;
+
+  if (Array.isArray(obj)) {
+    h ^= deepHashJSArray(obj);
+    h *= 31;
+  }
+
+  var keys = Object.keys(obj).sort();
+  for (var i = 0; i < keys.length; i++) {
+    h ^= hash(obj[keys[i]]);
+    h *= 31;
+  }
+
+  return h;
+}
+
 function hashJSObj(obj) {
   var hashed;
   if (usingWeakMap) {
@@ -865,7 +891,8 @@ function hashJSObj(obj) {
     }
   }
 
-  hashed = ++objHashUID;
+  hashed = typeof obj === 'function' ? ++objHashUID : getDeepHashJSObj(obj);
+
   if (objHashUID & 0x40000000) {
     objHashUID = 0;
   }
