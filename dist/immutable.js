@@ -764,7 +764,9 @@
 
   var defaultValueOf = Object.prototype.valueOf;
 
-  function hash(o) {
+  function hash(o, objPath) {
+    if ( objPath === void 0 ) objPath = [];
+
     switch (typeof o) {
       case 'boolean':
         // The hash values for built-in constants are a 1 value for each 5-byte
@@ -789,7 +791,7 @@
         if (o.valueOf !== defaultValueOf && typeof o.valueOf === 'function') {
           o = o.valueOf(o);
         }
-        return hashJSObj(o);
+        return hashJSObj(o, objPath);
       case 'undefined':
         return 0x42108423;
       default:
@@ -845,33 +847,43 @@
     return smi(hashed);
   }
 
-  function deepHashJSArray(arr) {
+  function deepHashJSArray(arr, objPath) {
     var h = 1;
     for (var i = 0; i < arr.length; ++i) {
       h *= 31;
-      h ^= hash(arr[i]);
+      h ^= hash(arr[i], objPath);
     }
     return h;
   }
 
-  function getDeepHashJSObj(obj) {
+  function getDeepHashJSObj(obj, objPath) {
+    if ( objPath === void 0 ) objPath = [];
+
     var h = 1;
+    if (objPath.includes(obj)) {
+      // cycle detection: we're already processing this object at a higher level
+      return 31;
+    }
+
+    var newPath = objPath.concat( [obj]);
 
     if (Array.isArray(obj)) {
-      h ^= deepHashJSArray(obj);
+      h ^= deepHashJSArray(obj, newPath);
       h *= 31;
     }
 
     var keys = Object.keys(obj).sort();
     for (var i = 0; i < keys.length; i++) {
-      h ^= hash(obj[keys[i]]);
+      h ^= hash(obj[keys[i]], newPath);
       h *= 31;
     }
 
     return h;
   }
 
-  function hashJSObj(obj) {
+  function hashJSObj(obj, objPath) {
+    if ( objPath === void 0 ) objPath = [];
+
     var hashed;
     if (usingWeakMap) {
       hashed = weakMap.get(obj);
@@ -897,7 +909,8 @@
       }
     }
 
-    hashed = typeof obj === 'function' ? ++objHashUID : getDeepHashJSObj(obj);
+    hashed =
+      typeof obj === 'function' ? ++objHashUID : getDeepHashJSObj(obj, objPath);
 
     if (objHashUID & 0x40000000) {
       objHashUID = 0;
