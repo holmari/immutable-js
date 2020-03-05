@@ -497,4 +497,36 @@ describe('Map', () => {
     const m2 = Map(objects);
     expect(m1).toEqual(m2);
   });
+
+  it('does not end up in infinite recursion if vanilla JS object has a backreference', () => {
+    const makeVanillaJsObject = optionalProps => ({
+      ...optionalProps,
+      field: 'value',
+      otherField: 'otherValue',
+    });
+
+    const uniqueObjCount = 100;
+    const objects = [];
+    for (let i = 0; i < 10000; ++i) {
+      // add a hundred unique objects to exceed the minimum size
+      objects.push([
+        makeVanillaJsObject(i < uniqueObjCount ? { index: i } : undefined),
+        'a value',
+      ]);
+    }
+
+    const backRefObject = {
+      text: 'hello',
+      child: {
+        parent: null,
+        text: 'world'
+      }
+    }
+    backRefObject.child.parent = backRefObject;
+
+    objects.push([backRefObject, 'back ref value'])
+    const map = Map(objects);
+
+    expect(map.get(backRefObject)).toEqual('back ref value');
+  });
 });
