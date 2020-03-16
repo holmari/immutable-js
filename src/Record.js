@@ -27,7 +27,7 @@ import { asMutable } from './methods/asMutable';
 import { asImmutable } from './methods/asImmutable';
 
 import invariant from './utils/invariant';
-import quoteString from './utils/quoteString';
+import toString from './utils/toString';
 
 export class Record {
   constructor(defaultValues, name) {
@@ -97,7 +97,7 @@ export class Record {
     let k;
     for (let i = 0, l = keys.length; i !== l; i++) {
       k = keys[i];
-      str += (i ? ', ' : '') + k + ': ' + quoteString(this.get(k));
+      str += (i ? ', ' : '') + k + ': ' + toString(this.get(k));
     }
     return str + ' }';
   }

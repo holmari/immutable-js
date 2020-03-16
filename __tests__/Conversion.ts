@@ -124,6 +124,16 @@ describe('Conversion', () => {
     );
   });
 
+  it('Deeply stringifies non-immutable objects', () => {
+    const record = Record({b: null, c: null});
+    const o = {a: List.of(record({b: [Map.of('c', 'c1', 'd', 'd2')], c: {d: 'test'}}))};
+    const l = List.of(o);
+    expect(l.toString()).toEqual(
+        'List [ Object { a: List [ Record { ' +
+        'b: Array [ Map { "c": "c1", "d": "d2" } ], c: Object { d: "test" } ' +
+        '} ] } ]');
+  });
+
   it('Converts deep JSON with custom conversion', () => {
     const seq = fromJS(js, function(key, sequence) {
       if (key === 'point') {

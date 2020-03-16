@@ -38,7 +38,7 @@ import arrCopy from './utils/arrCopy';
 import assertNotInfinite from './utils/assertNotInfinite';
 import deepEqual from './utils/deepEqual';
 import mixin from './utils/mixin';
-import quoteString from './utils/quoteString';
+import toString from './utils/toString';
 
 import { toJS } from './toJS';
 import { Map } from './Map';
@@ -516,7 +516,7 @@ const CollectionPrototype = Collection.prototype;
 CollectionPrototype[IS_COLLECTION_SYMBOL] = true;
 CollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.values;
 CollectionPrototype.toJSON = CollectionPrototype.toArray;
-CollectionPrototype.__toStringMapper = quoteString;
+CollectionPrototype.__toStringMapper = toString;
 CollectionPrototype.inspect = CollectionPrototype.toSource = function() {
   return this.toString();
 };
@@ -556,7 +556,7 @@ KeyedCollectionPrototype[IS_KEYED_SYMBOL] = true;
 KeyedCollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
 KeyedCollectionPrototype.toJSON = toObject;
 KeyedCollectionPrototype.__toStringMapper = (v, k) =>
-  quoteString(k) + ': ' + quoteString(v);
+  toString(k) + ': ' + toString(v);
 
 mixin(IndexedCollection, {
   // ### Conversion to other types

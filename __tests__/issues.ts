@@ -86,7 +86,7 @@ describe('Issue #1252', () => {
   it('should be toString-able even if it contains a value which is not', () => {
     const prototypelessObj = Object.create(null);
     const list = List([prototypelessObj]);
-    expect(list.toString()).toBe('List [ {} ]');
+    expect(list.toString()).toBe('List [ Object {} ]');
   });
 });
 

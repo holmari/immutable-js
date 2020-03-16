@@ -8,7 +8,7 @@
 import { isImmutable } from '../predicates/isImmutable';
 import coerceKeyPath from '../utils/coerceKeyPath';
 import isDataStructure from '../utils/isDataStructure';
-import quoteString from '../utils/quoteString';
+import toString from '../utils/toString';
 import { NOT_SET } from '../TrieUtils';
 import { emptyMap } from '../Map';
 import { get } from './get';
@@ -48,7 +48,7 @@ function updateInDeeply(
   if (!wasNotSet && !isDataStructure(existing)) {
     throw new TypeError(
       'Cannot update within non-data-structure value in path [' +
-        keyPath.slice(0, i).map(quoteString) +
+        keyPath.slice(0, i).map(toString) +
         ']: ' +
         existing
     );
