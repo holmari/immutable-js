@@ -473,4 +473,28 @@ describe('Map', () => {
       Map([[a, Map([[b, Map([[c, 10], [d, 2], [e, 20], [f, 30], [g, 40]])]])]])
     );
   });
+
+  it('works if trying to insert a large number of vanilla JS objects', () => {
+    const makeVanillaJsObject = optionalProps => ({
+      ...optionalProps,
+      field: 'value',
+      otherField: 'otherValue',
+    });
+
+    const uniqueObjCount = 100;
+    const objects = [];
+    for (let i = 0; i < 10000; ++i) {
+      // add a hundred unique objects to exceed the minimum size
+      objects.push([
+        makeVanillaJsObject(i < uniqueObjCount ? { index: i } : undefined),
+        'a value',
+      ]);
+    }
+
+    const m1 = Map(objects);
+    expect(m1.keySeq().size).toBe(uniqueObjCount + 1);
+
+    const m2 = Map(objects);
+    expect(m1).toEqual(m2);
+  });
 });

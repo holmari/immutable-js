@@ -97,7 +97,7 @@
  * [Iterable]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
  */
 
-declare module Immutable {
+
 
   /**
    * Lists are ordered indexed dense collections, much like a JavaScript
@@ -5334,8 +5334,4 @@ declare module Immutable {
     collection: C,
     ...collections: Array<Iterable<any> | Iterable<[any, any]> | {[key: string]: any}>
   ): C;
-}
 
-declare module "immutable" {
-  export = Immutable
-}
