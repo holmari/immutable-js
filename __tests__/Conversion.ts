@@ -134,6 +134,12 @@ describe('Conversion', () => {
         '} ] } ]');
   });
 
+  it('Stably sorts object keys (independent of insertion order) when stringifying', () => {
+    const o1 = {a: 1, b: 2};
+    const o2 = {b: 2, a: 1};
+    expect(List.of(o1).toString()).toEqual(List.of(o2).toString());
+  });
+
   it('Converts deep JSON with custom conversion', () => {
     const seq = fromJS(js, function(key, sequence) {
       if (key === 'point') {
