@@ -21,6 +21,7 @@ export default function toString(value) {
       return value.toString();
     }
     const middle = Object.keys(value)
+      .sort()
       .map(key => `${key}: ${toString(value[key])}`)
       .join(', ');
 

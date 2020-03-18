@@ -1932,10 +1932,31 @@ function isDataStructure(value) {
 /**
  * Converts a value to a string, adding quotes if a string was provided.
  */
-function quoteString(value) {
+function toString(value) {
+  if (typeof value === 'string') {
+    return JSON.stringify(value);
+  } else if (value == null) {
+    return String(value);
+  } else if (Array.isArray(value)) {
+    var middle = value.length > 0 ? ' ' + value.map(toString) + ' ' : '';
+    return 'Array [' + middle + ']';
+  } else if (typeof value === 'object') {
+    if (value.toString !== Object.prototype.toString && 'toString' in value) {
+      return value.toString();
+    }
+    var middle$1 = Object.keys(value)
+      .sort()
+      .map(function (key) { return (key + ": " + (toString(value[key]))); })
+      .join(', ');
+
+    var spacedMiddle = middle$1.length > 0 ? ' ' + middle$1 + ' ' : '';
+
+    return 'Object {' + spacedMiddle + '}';
+  }
+
   try {
-    return typeof value === 'string' ? JSON.stringify(value) : String(value);
-  } catch (_ignoreError) {
+    return value.toString();
+  } catch (_ignore) {
     return JSON.stringify(value);
   }
 }
@@ -2050,7 +2071,7 @@ function updateInDeeply(
   if (!wasNotSet && !isDataStructure(existing)) {
     throw new TypeError(
       'Cannot update within non-data-structure value in path [' +
-        keyPath.slice(0, i).map(quoteString) +
+        keyPath.slice(0, i).map(toString) +
         ']: ' +
         existing
     );
@@ -4724,7 +4745,7 @@ mixin(Collection, {
 
   // ### Common JavaScript methods and properties
 
-  toString: function toString() {
+  toString: function toString$$1() {
     return '[Collection]';
   },
 
@@ -5076,7 +5097,7 @@ var CollectionPrototype = Collection.prototype;
 CollectionPrototype[IS_COLLECTION_SYMBOL] = true;
 CollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.values;
 CollectionPrototype.toJSON = CollectionPrototype.toArray;
-CollectionPrototype.__toStringMapper = quoteString;
+CollectionPrototype.__toStringMapper = toString;
 CollectionPrototype.inspect = CollectionPrototype.toSource = function() {
   return this.toString();
 };
@@ -5119,7 +5140,7 @@ var KeyedCollectionPrototype = KeyedCollection.prototype;
 KeyedCollectionPrototype[IS_KEYED_SYMBOL] = true;
 KeyedCollectionPrototype[ITERATOR_SYMBOL] = CollectionPrototype.entries;
 KeyedCollectionPrototype.toJSON = toObject;
-KeyedCollectionPrototype.__toStringMapper = function (v, k) { return quoteString(k) + ': ' + quoteString(v); };
+KeyedCollectionPrototype.__toStringMapper = function (v, k) { return toString(k) + ': ' + toString(v); };
 
 mixin(IndexedCollection, {
   // ### Conversion to other types
@@ -5488,13 +5509,13 @@ var Record = function Record(defaultValues, name) {
   return RecordType;
 };
 
-Record.prototype.toString = function toString () {
+Record.prototype.toString = function toString$1 () {
   var str = recordName(this) + ' { ';
   var keys = this._keys;
   var k;
   for (var i = 0, l = keys.length; i !== l; i++) {
     k = keys[i];
-    str += (i ? ', ' : '') + k + ': ' + quoteString(this.get(k));
+    str += (i ? ', ' : '') + k + ': ' + toString(this.get(k));
   }
   return str + ' }';
 };
